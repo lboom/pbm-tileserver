@@ -1,0 +1,56 @@
+---
+- name: tilserver-gl system user
+  user:
+    name: tiler
+    comment: tileserver user
+    uid: 1337
+    home: /var/www/tiler
+
+- name: tileserver supervisor config
+  copy:
+    src: src/tileserver.supervisor.conf
+    dest: /var/www/tiler/tileserver.supervisor.conf
+
+- name: add packages via yarn
+  command: yarn add tileserver-gl
+  args:
+    chdir: /var/www/tiler
+
+- name: yarn install
+  command: yarn install
+  args:
+    chdir: /var/www/tiler
+
+- name: tileserver config
+  copy:
+    src: src/config.json
+    dest: /var/www/tiler/config.json
+
+- name: tileserver directory structure
+  file:
+    path: "/var/www/tiler/{{ item }}"
+    state: directory
+  with_items:
+    - styles
+    - fonts
+    - mbtiles
+    - log
+
+- name: unpack pbm tiles
+  unarchive:
+    src: src/PBM-Style.zip
+    dest: /var/www/tiler/styles/
+
+- name: deploy tiles
+  copy:
+    src: src/zurich.mbtiles
+    dest: /var/www/tiler/mbtiles/zurich.mbtiles
+
+# lazy perm fixing
+- name: fix app perms
+  file:
+    path: /var/www/tiler
+    state: directory
+    recurse: yes
+    owner: tiler
+    group: tiler

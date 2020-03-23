@@ -1,0 +1,7 @@
+---
+- hosts: tileserver
+  become: true
+  tasks:
+    - include: packages.yml
+    - include: app_config.yml
+    - include: services.yml

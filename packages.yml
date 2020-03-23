@@ -1,0 +1,36 @@
+---
+- name: yarn apt key
+  get_url: 
+    url: https://dl.yarnpkg.com/debian/pubkey.gpg
+    dest: /tmp/yarn.gpg
+
+- name: gnupg2 required for yarn key
+  apt:
+    name: gnupg2
+
+- name: add yarn apt key
+  command: /usr/bin/apt-key add /tmp/yarn.gpg
+
+- name: add yarn repo
+  apt_repository:
+    repo: deb https://dl.yarnpkg.com/debian/ stable main
+    state: present
+
+- name: update apt
+  apt:
+    update_cache: yes
+
+- name: base requirements
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - build-essential
+    - nodejs
+    - npm
+    - nginx
+    - vim
+    - yarn
+    - unzip
+    - supervisor
+    - libegl1-mesa-dev

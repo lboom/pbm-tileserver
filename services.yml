@@ -1,0 +1,11 @@
+---
+- name: tilerserver supervisor service link
+  file:
+    src: /var/www/tiler/tileserver.supervisor.conf
+    dest: /etc/supervisor/conf.d/tileserver.supervisor.conf
+    state: link
+
+- name: reload supervisor
+  systemd:
+    name: supervisor
+    state: reloaded
