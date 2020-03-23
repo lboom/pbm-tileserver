@@ -9,3 +9,13 @@
   systemd:
     name: supervisor
     state: reloaded
+
+- name: nginx proxy config
+  copy:
+    src: src/tileserver_nginx.conf
+    dest: /etc/nginx/conf.d/tileserver.conf
+
+- name: reload nginx
+  systemd:
+    name: nginx
+    state: reloaded
